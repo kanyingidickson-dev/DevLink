@@ -35,18 +35,40 @@ export async function GET() {
     return NextResponse.json({ error: "Profile missing" }, { status: 404 });
   }
 
-  const [views, clicks] = await Promise.all([
+  const [views, clicks, activity, followersCount, followingCount, likesReceived] = await Promise.all([
     prisma.analyticsEvent.count({
       where: { profileId: user.profile.id, type: "VIEW" }
     }),
     prisma.analyticsEvent.count({
       where: { profileId: user.profile.id, type: "CLICK" }
+    }),
+    prisma.analyticsEvent.findMany({
+      where: { profileId: user.profile.id },
+      orderBy: { createdAt: "desc" },
+      take: 25,
+      select: {
+        id: true,
+        type: true,
+        createdAt: true,
+        link: { select: { id: true, label: true } }
+      }
+    }),
+    prisma.follow.count({
+      where: { followingId: userId }
+    }),
+    prisma.follow.count({
+      where: { followerId: userId }
+    }),
+    prisma.projectLike.count({
+      where: { project: { profileId: user.profile.id } }
     })
   ]);
 
   return NextResponse.json({
     user: { email: user.email, username: user.username },
     profile: user.profile,
-    analytics: { views, clicks }
+    analytics: { views, clicks },
+    social: { followersCount, followingCount, likesReceived },
+    activity
   });
 }

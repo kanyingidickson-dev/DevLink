@@ -56,6 +56,17 @@ Optional (enables OAuth buttons):
 npx prisma migrate dev
 ```
 
+Optional seed data:
+
+```bash
+npm run db:seed
+```
+
+Seeded credentials:
+
+- Email: `demo@devlink.local`
+- Password: `password123`
+
 ### 5) Run dev server
 
 ```bash

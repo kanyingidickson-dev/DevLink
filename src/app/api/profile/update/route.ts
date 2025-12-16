@@ -14,7 +14,12 @@ export async function POST(req: Request) {
   const username = normalizeUsername(body?.username);
   const displayName = typeof body?.displayName === "string" ? body.displayName.trim() : null;
   const bio = typeof body?.bio === "string" ? body.bio.trim() : null;
-  const avatarUrl = normalizeUrl(body?.avatarUrl) ?? null;
+  const rawAvatarUrl = typeof body?.avatarUrl === "string" ? body.avatarUrl.trim() : null;
+  const avatarUrl = rawAvatarUrl
+    ? rawAvatarUrl.startsWith("/uploads/")
+      ? rawAvatarUrl
+      : normalizeUrl(rawAvatarUrl)
+    : null;
   const theme = body?.theme === "DARK" ? "DARK" : "LIGHT";
   const skills = parseSkills(body?.skills);
 
