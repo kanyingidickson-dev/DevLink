@@ -2,13 +2,27 @@
 
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
+
+function sanitizeCallbackUrl(raw: string | null | undefined) {
+  const fallback = "/dashboard";
+  if (!raw) return fallback;
+  const v = raw.trim();
+  if (!v) return fallback;
+  if (!v.startsWith("/")) return fallback;
+  if (v.startsWith("//")) return fallback;
+  if (v.includes("://")) return fallback;
+  return v;
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = useMemo(() => searchParams.get("callbackUrl") ?? "/dashboard", [searchParams]);
+  const callbackUrl = useMemo(
+    () => sanitizeCallbackUrl(searchParams.get("callbackUrl")),
+    [searchParams]
+  );
 
   const [providers, setProviders] = useState<Record<string, unknown> | null>(null);
 
@@ -37,12 +51,26 @@ export default function LoginPage() {
     };
   }, []);
 
+  useEffect(() => {
+    const m = searchParams.get("mode");
+    if (m === "signup") setMode("signup");
+    if (m === "signin") setMode("signin");
+  }, [searchParams]);
+
   const hasGithub = Boolean(providers && (providers as any).github);
   const hasGoogle = Boolean(providers && (providers as any).google);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    if (mode === "signup" && username.trim().length < 2) {
+      const msg = "Username must be at least 2 characters";
+      setError(msg);
+      toast.error(msg);
+      return;
+    }
+
     setBusy(true);
 
     try {
@@ -57,6 +85,8 @@ export default function LoginPage() {
           const body = await res.json().catch(() => ({}));
           throw new Error(body?.error ?? "Registration failed");
         }
+
+        toast.success("Account created");
       }
 
       const result = await signIn("credentials", {
@@ -67,9 +97,13 @@ export default function LoginPage() {
       });
 
       if (!result?.ok) throw new Error("Invalid email or password");
+
+      toast.success("Signed in");
       router.push(callbackUrl);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      const msg = err instanceof Error ? err.message : "Something went wrong";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }

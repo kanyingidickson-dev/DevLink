@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type LinkItem = { id: string; label: string; url: string; clickCount: number };
 
@@ -44,8 +45,11 @@ export default function LinksEditor() {
       setLabel("");
       setUrl("");
       await refresh();
+      toast.success("Link added");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add link");
+      const msg = err instanceof Error ? err.message : "Failed to add link";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
@@ -66,8 +70,11 @@ export default function LinksEditor() {
       }
 
       await refresh();
+      toast.success("Link deleted");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to delete link");
+      const msg = err instanceof Error ? err.message : "Failed to delete link";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }
