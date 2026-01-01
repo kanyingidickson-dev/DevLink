@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 
 type NotificationItem = {
   id: string;
-  type: "FOLLOW" | "PROJECT_LIKED";
+  type: string;
   createdAt: string;
-  readAt: string | null;
-  actor: { id: string; username: string | null } | null;
-  actorIsFollowing: boolean | null;
-  project: { id: string; title: string } | null;
+  isRead: boolean;
+  actor: { username: string | null } | null;
+  project: { title: string } | null;
 };
 
 export default function NotificationsPanel() {
@@ -21,7 +20,7 @@ export default function NotificationsPanel() {
 
   async function refresh() {
     setError(null);
-    const res = await fetch("/api/social/notifications");
+    const res = await fetch("/api/notifications");
     if (!res.ok) {
       setError("Failed to load notifications");
       return;
@@ -38,7 +37,7 @@ export default function NotificationsPanel() {
   async function markRead(notificationId: string) {
     setBusyId(notificationId);
     try {
-      const res = await fetch("/api/social/notifications", {
+      const res = await fetch("/api/notifications", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ notificationId })
@@ -50,7 +49,7 @@ export default function NotificationsPanel() {
       }
 
       setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? { ...n, readAt: new Date().toISOString() } : n))
+        prev.map((n) => (n.id === notificationId ? { ...n, isRead: true } : n))
       );
     } finally {
       setBusyId(null);
@@ -140,7 +139,7 @@ export default function NotificationsPanel() {
                   )
                 ) : null}
 
-                {n.readAt ? (
+                {n.isRead ? (
                   <div className="text-xs text-zinc-500">Read</div>
                 ) : (
                   <button

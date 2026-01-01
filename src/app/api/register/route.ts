@@ -7,7 +7,7 @@ import { normalizeEmail, normalizeUsername } from "@/lib/validators";
 
 export async function POST(req: Request) {
   const ip = getClientIp(req);
-  const rl = rateLimit({ key: `register:${ip}`, limit: 10, windowMs: 10 * 60 * 1000 });
+  const rl = await rateLimit({ key: `register:${ip}`, limit: 10, windowMs: 10 * 60 * 1000 });
   if (!rl.ok) {
     return NextResponse.json(
       { error: "Too many requests" },

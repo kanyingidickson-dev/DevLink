@@ -7,10 +7,12 @@ type ProjectItem = {
   id: string;
   title: string;
   description: string | null;
+  markdown?: string | null;
   repoUrl: string | null;
   liveUrl: string | null;
   techStack: string[];
   imageUrl: string | null;
+  mediaUrls?: string[];
   featured: boolean;
   sortOrder: number;
 };
@@ -30,6 +32,8 @@ export default function ProjectsEditor() {
   const [imageUrl, setImageUrl] = useState("");
   const [featured, setFeatured] = useState(false);
   const [sortOrder, setSortOrder] = useState("999");
+  const [markdown, setMarkdown] = useState("");
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
 
   function resetForm() {
     setEditingId(null);
@@ -68,6 +72,8 @@ export default function ProjectsEditor() {
     setImageUrl(project.imageUrl ?? "");
     setFeatured(Boolean(project.featured));
     setSortOrder(String(project.sortOrder ?? 999));
+    setMarkdown(project.markdown ?? "");
+    setMediaUrls(project.mediaUrls ?? []);
   }
 
   async function save() {
@@ -91,7 +97,9 @@ export default function ProjectsEditor() {
           techStack,
           imageUrl,
           featured,
-          sortOrder
+          sortOrder,
+          markdown,
+          mediaUrls
         })
       });
 
@@ -168,6 +176,24 @@ export default function ProjectsEditor() {
       {error ? <div className="text-sm text-red-500">{error}</div> : null}
 
       <div className="grid gap-3 md:grid-cols-2">
+        <label className="grid gap-1 md:col-span-2">
+          <div className="text-sm">Markdown (optional)</div>
+          <textarea
+            value={markdown}
+            onChange={(e) => setMarkdown(e.target.value)}
+            className="min-h-24 rounded border bg-transparent px-3 py-2 font-mono"
+            placeholder="Project details in markdown..."
+          />
+        </label>
+        <label className="grid gap-1 md:col-span-2">
+          <div className="text-sm">Media URLs (comma separated)</div>
+          <input
+            value={mediaUrls.join(", ")}
+            onChange={(e) => setMediaUrls(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+            className="rounded border bg-transparent px-3 py-2"
+            placeholder="https://img1, https://img2"
+          />
+        </label>
         <label className="grid gap-1">
           <div className="text-sm">Title</div>
           <input
@@ -265,13 +291,33 @@ export default function ProjectsEditor() {
               ) : null}
               <div className="text-xs text-zinc-500">sort: {p.sortOrder}</div>
             </div>
-
+            <div className="text-xs text-zinc-600 dark:text-zinc-400">
+              {p.markdown ? <pre className="whitespace-pre-wrap font-mono">{p.markdown}</pre> : null}
+              {p.mediaUrls && p.mediaUrls.length
+                ? (
+                  <div className="flex gap-2 py-1">
+                    {p.mediaUrls.map((url, i) => (
+                      <img key={i} src={url} alt="media" className="h-12 w-12 object-cover rounded" />
+                    ))}
+                  </div>
+                ) : null}
+              <button
+                type="button"
+                className="rounded border px-2 py-1 text-xs mt-2"
+                onClick={() => fetch("/api/projects/endorse", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ projectId: p.id, message: "Great work!" }) }).then(() => toast.success("Endorsed!"))}
+              >
+                Endorse
+              </button>
+            </div>
             <div className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
                 onClick={() => startEdit(p)}
                 disabled={busy}
                 className="rounded border px-2 py-1 text-xs disabled:opacity-60"
+                tabIndex={0}
+                aria-label="Edit project"
+                role="button"
               >
                 Edit
               </button>
@@ -280,6 +326,9 @@ export default function ProjectsEditor() {
                 onClick={() => remove(p.id)}
                 disabled={busy}
                 className="rounded border px-2 py-1 text-xs disabled:opacity-60"
+                tabIndex={0}
+                aria-label="Delete project"
+                role="button"
               >
                 Delete
               </button>

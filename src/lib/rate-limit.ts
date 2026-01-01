@@ -1,3 +1,7 @@
+import { Prisma } from "@prisma/client";
+
+import { prisma } from "@/lib/prisma";
+
 type RateLimitResult = {
   ok: boolean;
   remaining: number;
@@ -24,7 +28,7 @@ function getStore(): RateLimitStore {
   return globalForRateLimit.__devlinkRateLimitStore;
 }
 
-export function rateLimit(opts: {
+export function rateLimitMemory(opts: {
   key: string;
   limit: number;
   windowMs: number;
@@ -52,6 +56,63 @@ export function rateLimit(opts: {
     remaining: Math.max(opts.limit - existing.count, 0),
     resetAt: existing.resetAt
   };
+}
+
+async function rateLimitDb(opts: {
+  key: string;
+  limit: number;
+  windowMs: number;
+  now?: number;
+}): Promise<RateLimitResult> {
+  const nowMs = opts.now ?? Date.now();
+  const now = new Date(nowMs);
+  const newResetAt = new Date(nowMs + opts.windowMs);
+
+  const rows = await prisma.$queryRaw<{ count: number; resetAt: Date }[]>(Prisma.sql`
+    INSERT INTO "RateLimitBucket" ("key", "count", "resetAt")
+    VALUES (${opts.key}, 1, ${newResetAt})
+    ON CONFLICT ("key") DO UPDATE SET
+      "count" = CASE
+        WHEN "RateLimitBucket"."resetAt" <= ${now} THEN 1
+        ELSE "RateLimitBucket"."count" + 1
+      END,
+      "resetAt" = CASE
+        WHEN "RateLimitBucket"."resetAt" <= ${now} THEN ${newResetAt}
+        ELSE "RateLimitBucket"."resetAt"
+      END
+    RETURNING "count", "resetAt";
+  `);
+
+  const row = rows[0];
+  const count = row?.count ?? 1;
+  const resetAtMs = (row?.resetAt ?? newResetAt).getTime();
+
+  if (count > opts.limit) {
+    return { ok: false, remaining: 0, resetAt: resetAtMs };
+  }
+
+  return {
+    ok: true,
+    remaining: Math.max(opts.limit - count, 0),
+    resetAt: resetAtMs
+  };
+}
+
+export async function rateLimit(opts: {
+  key: string;
+  limit: number;
+  windowMs: number;
+  now?: number;
+}): Promise<RateLimitResult> {
+  if (process.env.DEVLINK_RATE_LIMIT_STORE === "memory") {
+    return rateLimitMemory(opts);
+  }
+
+  try {
+    return await rateLimitDb(opts);
+  } catch {
+    return rateLimitMemory(opts);
+  }
 }
 
 export function getClientIp(req: Request) {

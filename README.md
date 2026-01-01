@@ -88,3 +88,33 @@ Open:
 
 - Link click tracking is done via a server redirect route (`/l/:linkId`) so it works without client JS.
 - OAuth is optional to keep local setup simple.
+
+## Architecture
+
+- `src/app` contains all Next.js routes (pages, API, server actions).
+- `src/components` contains reusable UI components.
+- `src/lib` contains helpers (auth, Prisma, rate limit, validators).
+- `prisma/schema.prisma` defines the database models.
+
+## Contributing
+
+- Use feature branches and pull requests.
+- Write tests for new features or bug fixes.
+- Run `npm run lint` and `npm test` before submitting.
+- Document any new endpoints or major changes in README.
+- For issues or questions, open a GitHub issue.
+
+## Security
+
+- Sessions use NextAuth with JWT.
+- Passwords use bcrypt hashes.
+- Public routes include `/u/:username`, `/l/:linkId`, and discover endpoints.
+- Rate limiting uses an in-memory store. It only limits per server instance.
+- Login `callbackUrl` only accepts relative paths.
+
+## Deployment
+
+- Hosting targets Vercel.
+- Required env vars are `DATABASE_URL` and `NEXTAUTH_SECRET`.
+- Optional env vars enable OAuth: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
+- Use a managed Postgres database in production.

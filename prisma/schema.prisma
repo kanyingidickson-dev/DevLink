@@ -22,6 +22,12 @@ enum NotificationType {
   PROJECT_LIKED
 }
 
+model RateLimitBucket {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+}
+
 model User {
   id            String    @id @default(cuid())
   email         String?   @unique
@@ -44,7 +50,27 @@ model User {
   projectLikes      ProjectLike[]
   notifications     Notification[]
   sentNotifications Notification[]  @relation("NotificationActor")
+  projectEndorsements ProjectEndorsement[]
+  projectComments ProjectComment[]
+  sentMessages Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
+
+model Message {
+  id        String   @id @default(cuid())
+  senderId  String
+  receiverId String
+  content   String
+  createdAt DateTime @default(now())
+  readAt    DateTime?
+
+  sender   User @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver User @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@index([senderId, createdAt])
+  @@index([receiverId, createdAt])
+}
+
 
 model Profile {
   id          String   @id @default(cuid())
@@ -53,6 +79,8 @@ model Profile {
   bio         String?
   avatarUrl   String?
   theme       Theme    @default(LIGHT)
+  colorPalette String? 
+  vanityUrl   String?  @unique
   skills      String[] @default([])
 
   createdAt DateTime @default(now())
@@ -85,10 +113,12 @@ model Project {
   profileId   String
   title       String
   description String?
+  markdown    String?
   repoUrl     String?
   liveUrl     String?
   techStack   String[] @default([])
   imageUrl    String?
+  mediaUrls   String[] @default([])
   featured    Boolean  @default(false)
   sortOrder   Int      @default(999)
 
@@ -98,11 +128,30 @@ model Project {
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
 
   likes ProjectLike[]
+  endorsements ProjectEndorsement[]
   notifications Notification[]
+  projectComments ProjectComment[]
 
   @@index([profileId])
   @@index([profileId, featured, sortOrder])
 }
+
+
+model ProjectEndorsement {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  message   String?
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@index([projectId, createdAt])
+  @@index([userId, createdAt])
+}
+
 
 model Follow {
   id          String   @id @default(cuid())
@@ -139,6 +188,7 @@ model Notification {
   actorId   String?
   projectId String?
   readAt    DateTime?
+  isRead    Boolean          @default(false)
   createdAt DateTime         @default(now())
 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -148,6 +198,21 @@ model Notification {
   @@index([userId, createdAt])
   @@index([userId, readAt])
 }
+
+model ProjectComment {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  message   String
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+  @@index([userId, createdAt])
+}
+
 
 model AnalyticsEvent {
   id        String             @id @default(cuid())

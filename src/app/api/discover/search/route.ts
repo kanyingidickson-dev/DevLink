@@ -7,7 +7,7 @@ import { parseSkills } from "@/lib/validators";
 
 export async function GET(req: Request) {
   const ip = getClientIp(req);
-  const rl = rateLimit({ key: `discover:search:${ip}`, limit: 120, windowMs: 60 * 1000 });
+  const rl = await rateLimit({ key: `discover:search:${ip}`, limit: 120, windowMs: 60 * 1000 });
   if (!rl.ok) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }

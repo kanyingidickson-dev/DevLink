@@ -26,6 +26,8 @@ export default function ProfileForm() {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [theme, setTheme] = useState<"LIGHT" | "DARK">("LIGHT");
   const [skills, setSkills] = useState("");
+  const [colorPalette, setColorPalette] = useState("");
+  const [vanityUrl, setVanityUrl] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -48,6 +50,8 @@ export default function ProfileForm() {
       setAvatarUrl(data.profile.avatarUrl ?? "");
       setTheme(data.profile.theme);
       setSkills((data.profile.skills ?? []).join(", "));
+      setColorPalette(data.profile.colorPalette ?? "");
+      setVanityUrl(data.profile.vanityUrl ?? "");
       setLoaded(true);
     }
 
@@ -71,8 +75,10 @@ export default function ProfileForm() {
           bio,
           avatarUrl,
           theme,
-          skills
-        })
+          skills,
+          colorPalette,
+          vanityUrl,
+        }),
       });
 
       if (!res.ok) {
@@ -101,7 +107,7 @@ export default function ProfileForm() {
 
       const res = await fetch("/api/profile/avatar", {
         method: "POST",
-        body: form
+        body: form,
       });
 
       if (!res.ok) {
@@ -135,6 +141,9 @@ export default function ProfileForm() {
           onClick={onSave}
           disabled={!loaded || saving}
           className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+          tabIndex={0}
+          aria-label="Save profile"
+          role="button"
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -173,6 +182,9 @@ export default function ProfileForm() {
                 onClick={uploadAvatar}
                 disabled={!avatarFile || uploadingAvatar}
                 className="rounded border px-3 py-1.5 text-sm disabled:opacity-60"
+                tabIndex={0}
+                aria-label="Upload avatar"
+                role="button"
               >
                 {uploadingAvatar ? "Uploading…" : "Upload"}
               </button>

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
 import AnalyticsPanel from "./analytics-panel";
+import AnalyticsInsights from "./analytics-insights";
+import { FeedPanel, SuggestionsPanel, TrendingPanel } from "./social-panels";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -40,7 +42,17 @@ export default async function DashboardPage() {
         </div>
       </section>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 space-y-6">
+          <FeedPanel />
+        </div>
+        <div className="space-y-6">
+          <SuggestionsPanel />
+          <TrendingPanel />
+        </div>
+      </div>
       <AnalyticsPanel />
+      <AnalyticsInsights />
     </div>
   );
 }
