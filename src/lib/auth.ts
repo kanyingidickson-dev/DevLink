@@ -7,6 +7,15 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Central NextAuth configuration.
+ *
+ * Responsibilities:
+ * - Configure auth providers (credentials always; OAuth providers only when env vars are present)
+ * - Persist users/sessions via Prisma adapter
+ * - Enrich JWT/session with username and bootstrap a default profile on first sign-up
+ */
+
 function buildProviders() {
   const providers = [] as NextAuthOptions["providers"];
 

@@ -37,12 +37,14 @@ export default async function PublicProfilePage({
   const session = await getServerSession(authOptions);
   const canFollow = session?.user?.id ? session.user.id !== user.id : true;
 
-  await prisma.analyticsEvent.create({
-    data: {
-      profileId: user.profile.id,
-      type: "VIEW"
-    }
-  });
+  void prisma.analyticsEvent
+    .create({
+      data: {
+        profileId: user.profile.id,
+        type: "VIEW"
+      }
+    })
+    .catch(() => null);
 
   const profile = user.profile;
   const displayName = profile.displayName || username;

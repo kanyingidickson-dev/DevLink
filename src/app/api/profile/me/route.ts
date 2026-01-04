@@ -4,6 +4,12 @@ import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Returns the authenticated user's profile plus dashboard metrics.
+ *
+ * Analytics queries are executed in parallel to keep the dashboard API responsive.
+ */
+
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,6 +23,7 @@ export async function GET() {
       username: true,
       profile: {
         select: {
+          id: true,
           displayName: true,
           bio: true,
           avatarUrl: true,

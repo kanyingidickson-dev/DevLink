@@ -1,4 +1,5 @@
 import DiscoverClient from "./discover-client";
+import { Suspense } from "react";
 
 export default function DiscoverPage() {
   return (
@@ -8,7 +9,9 @@ export default function DiscoverPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-300">Search profiles, browse trending, and explore the directory.</p>
       </div>
 
-      <DiscoverClient />
+      <Suspense fallback={<div className="text-sm text-zinc-500">Loading…</div>}>
+        <DiscoverClient />
+      </Suspense>
     </div>
   );
 }

@@ -1,5 +1,14 @@
 import "./globals.css";
 
+/**
+ * App shell layout.
+ *
+ * Responsibilities:
+ * - Apply global styles and metadata
+ * - Mount global providers (auth session, theming, toasts)
+ * - Render shared navigation and consistent page spacing
+ */
+
 import Link from "next/link";
 import type { ReactNode } from "react";
 

@@ -5,6 +5,13 @@ import { prisma } from "@/lib/prisma";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { parseSkills } from "@/lib/validators";
 
+/**
+ * Directory search endpoint.
+ *
+ * Uses a parameterized raw SQL query (via `Prisma.sql`) to keep the search flexible (ILIKE + array skills)
+ * while remaining SQL-injection safe.
+ */
+
 export async function GET(req: Request) {
   const ip = getClientIp(req);
   const rl = await rateLimit({ key: `discover:search:${ip}`, limit: 120, windowMs: 60 * 1000 });
@@ -42,7 +49,7 @@ export async function GET(req: Request) {
   }
 
   const whereSql = whereParts.length
-    ? Prisma.sql`(${Prisma.join(whereParts, Prisma.sql` OR `)})`
+    ? Prisma.sql`(${Prisma.join(whereParts, " OR ")})`
     : Prisma.sql`(u.username ILIKE ${`%${q}%`} OR p."displayName" ILIKE ${`%${q}%`})`;
 
   const rows = await prisma.$queryRaw<
