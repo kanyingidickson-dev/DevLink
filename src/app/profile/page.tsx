@@ -20,7 +20,7 @@ export default async function ProfilePage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-300">Manage your public profile details.</p>
       </div>
 
-      <div className="rounded border p-4">
+      <div className="rounded border border-zinc-200 p-4 dark:border-zinc-800">
         <div className="text-sm text-zinc-500">Signed in as</div>
         <div className="text-sm">
           {session.user.email ?? ""}

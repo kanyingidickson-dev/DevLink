@@ -135,14 +135,14 @@ export default function ProfileForm() {
   }
 
   return (
-    <section className="space-y-4 rounded border p-4">
+    <section className="space-y-4 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Profile</h2>
         <button
           type="button"
           onClick={onSave}
           disabled={!loaded || saving}
-          className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+          className="rounded bg-zinc-900 px-3 py-1.5 text-sm text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
           tabIndex={0}
           aria-label="Save profile"
           role="button"
@@ -154,7 +154,7 @@ export default function ProfileForm() {
       {error ? <div className="text-sm text-red-500">{error}</div> : null}
 
       <div className="grid gap-3">
-        <div className="flex flex-col gap-3 rounded border p-3">
+        <div className="flex flex-col gap-3 rounded border border-zinc-200 p-3 dark:border-zinc-800">
           <div className="text-sm font-medium">Avatar</div>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
@@ -162,10 +162,10 @@ export default function ProfileForm() {
                 <img
                   alt="Avatar preview"
                   src={avatarUrl}
-                  className="h-12 w-12 rounded-full border object-cover"
+                  className="h-12 w-12 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
                 />
               ) : (
-                <div className="h-12 w-12 rounded-full border" />
+                <div className="h-12 w-12 rounded-full border border-zinc-200 dark:border-zinc-800" />
               )}
 
               <div className="text-xs text-zinc-500">PNG/JPG/WebP/GIF up to 2MB</div>
@@ -183,7 +183,7 @@ export default function ProfileForm() {
                 type="button"
                 onClick={uploadAvatar}
                 disabled={!avatarFile || uploadingAvatar}
-                className="rounded border px-3 py-1.5 text-sm disabled:opacity-60"
+                className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
                 tabIndex={0}
                 aria-label="Upload avatar"
                 role="button"
@@ -199,7 +199,7 @@ export default function ProfileForm() {
           <input
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="your_handle"
             autoComplete="username"
           />
@@ -210,7 +210,7 @@ export default function ProfileForm() {
           <input
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="Your name"
           />
         </label>
@@ -220,7 +220,7 @@ export default function ProfileForm() {
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="min-h-24 rounded border bg-transparent px-3 py-2"
+            className="min-h-24 rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="A sentence or two."
           />
         </label>
@@ -230,7 +230,7 @@ export default function ProfileForm() {
           <input
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="TypeScript, React, Postgres"
           />
         </label>
@@ -240,7 +240,7 @@ export default function ProfileForm() {
           <input
             value={avatarUrl}
             onChange={(e) => setAvatarUrl(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="https://…"
           />
         </label>
@@ -250,7 +250,7 @@ export default function ProfileForm() {
           <select
             value={theme}
             onChange={(e) => setTheme(e.target.value as "LIGHT" | "DARK")}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
           >
             <option value="LIGHT">Light</option>
             <option value="DARK">Dark</option>

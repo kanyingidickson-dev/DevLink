@@ -34,7 +34,7 @@ export default function HomeTrending() {
   }, []);
 
   return (
-    <section className="space-y-3 rounded border p-4">
+    <section className="space-y-3 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-lg font-semibold">Trending developers</h2>
         <Link href="/discover" className="text-sm underline">
@@ -47,13 +47,13 @@ export default function HomeTrending() {
           <Link
             key={t.username}
             href={`/u/${t.username}`}
-            className="flex items-center justify-between gap-3 rounded border px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900"
+            className="flex items-center justify-between gap-3 rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
           >
             <div className="flex min-w-0 items-center gap-3">
               {t.avatarUrl ? (
-                <img alt={t.displayName} src={t.avatarUrl} className="h-8 w-8 rounded-full border object-cover" />
+                <img alt={t.displayName} src={t.avatarUrl} className="h-8 w-8 rounded-full border border-zinc-200 object-cover dark:border-zinc-800" />
               ) : (
-                <div className="h-8 w-8 rounded-full border" />
+                <div className="h-8 w-8 rounded-full border border-zinc-200 dark:border-zinc-800" />
               )}
               <div className="min-w-0">
                 <div className="truncate font-medium">{t.displayName}</div>

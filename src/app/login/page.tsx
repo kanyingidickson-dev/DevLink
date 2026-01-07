@@ -132,7 +132,7 @@ function LoginPageInner() {
             <button
               type="button"
               onClick={() => signIn("github", { callbackUrl })}
-              className="flex-1 rounded border px-3 py-2 text-sm"
+              className="flex-1 rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
             >
               GitHub
             </button>
@@ -141,7 +141,7 @@ function LoginPageInner() {
             <button
               type="button"
               onClick={() => signIn("google", { callbackUrl })}
-              className="flex-1 rounded border px-3 py-2 text-sm"
+              className="flex-1 rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
             >
               Google
             </button>
@@ -164,7 +164,7 @@ function LoginPageInner() {
             <input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded border bg-transparent px-3 py-2"
+              className="w-full rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
               autoComplete="username"
               placeholder="your_handle"
             />
@@ -176,7 +176,7 @@ function LoginPageInner() {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded border bg-transparent px-3 py-2"
+            className="w-full rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             autoComplete="email"
             type="email"
             placeholder="you@example.com"
@@ -189,7 +189,7 @@ function LoginPageInner() {
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded border bg-transparent px-3 py-2"
+            className="w-full rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             autoComplete={mode === "signup" ? "new-password" : "current-password"}
             type="password"
             required
@@ -201,7 +201,7 @@ function LoginPageInner() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+          className="w-full rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           {busy ? "Working…" : mode === "signin" ? "Sign in" : "Create account"}
         </button>
