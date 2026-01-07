@@ -81,7 +81,7 @@ export default function LinksEditor() {
   }
 
   return (
-    <section className="space-y-4 rounded border p-4">
+    <section className="space-y-4 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold">Links</h2>
       </div>
@@ -92,13 +92,13 @@ export default function LinksEditor() {
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className="rounded border bg-transparent px-3 py-2"
+          className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
           placeholder="Label (GitHub, LinkedIn…)"
         />
         <input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="rounded border bg-transparent px-3 py-2 md:col-span-2"
+          className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800 md:col-span-2"
           placeholder="https://…"
         />
 
@@ -126,7 +126,7 @@ export default function LinksEditor() {
                 type="button"
                 onClick={() => remove(link.id)}
                 disabled={busy}
-                className="rounded border px-2 py-1 text-xs disabled:opacity-60"
+                className="rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
               >
                 Delete
               </button>

@@ -185,12 +185,12 @@ export default function DiscoverClient() {
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            className="w-full rounded border bg-transparent px-3 py-2"
+            className="w-full rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="Search by username, name, bio, or skills"
           />
 
           {suggestions.length && hasQuery ? (
-            <div className="absolute left-0 right-0 top-full z-10 mt-2 overflow-hidden rounded border bg-white shadow-sm dark:bg-zinc-950">
+            <div className="absolute left-0 right-0 top-full z-10 mt-2 overflow-hidden rounded border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
               {suggestions.slice(0, 6).map((s) => (
                 <Link
                   key={s.username}
@@ -198,9 +198,13 @@ export default function DiscoverClient() {
                   className="flex items-center gap-3 px-3 py-2 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900"
                 >
                   {s.avatarUrl ? (
-                    <img alt={s.displayName} src={s.avatarUrl} className="h-7 w-7 rounded-full border object-cover" />
+                    <img
+                      alt={s.displayName}
+                      src={s.avatarUrl}
+                      className="h-7 w-7 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
+                    />
                   ) : (
-                    <div className="h-7 w-7 rounded-full border" />
+                    <div className="h-7 w-7 rounded-full border border-zinc-200 dark:border-zinc-800" />
                   )}
                   <div className="min-w-0">
                     <div className="truncate font-medium">{s.displayName}</div>
@@ -220,12 +224,20 @@ export default function DiscoverClient() {
           <h2 className="text-lg font-semibold">Results</h2>
           <div className="grid gap-3">
             {results.map((r) => (
-              <Link key={r.username} href={`/u/${r.username}`} className="rounded border p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+              <Link
+                key={r.username}
+                href={`/u/${r.username}`}
+                className="rounded border border-zinc-200 p-4 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+              >
                 <div className="flex items-center gap-3">
                   {r.avatarUrl ? (
-                    <img alt={r.displayName} src={r.avatarUrl} className="h-10 w-10 rounded-full border object-cover" />
+                    <img
+                      alt={r.displayName}
+                      src={r.avatarUrl}
+                      className="h-10 w-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
+                    />
                   ) : (
-                    <div className="h-10 w-10 rounded-full border" />
+                    <div className="h-10 w-10 rounded-full border border-zinc-200 dark:border-zinc-800" />
                   )}
                   <div className="min-w-0">
                     <div className="truncate text-sm font-semibold">{r.displayName}</div>
@@ -255,13 +267,21 @@ export default function DiscoverClient() {
             <h2 className="text-lg font-semibold">Trending this week</h2>
             <div className="grid gap-3 md:grid-cols-2">
               {trending.map((t) => (
-                <Link key={t.username} href={`/u/${t.username}`} className="rounded border p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <Link
+                  key={t.username}
+                  href={`/u/${t.username}`}
+                  className="rounded border border-zinc-200 p-4 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                >
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       {t.avatarUrl ? (
-                        <img alt={t.displayName} src={t.avatarUrl} className="h-10 w-10 rounded-full border object-cover" />
+                        <img
+                          alt={t.displayName}
+                          src={t.avatarUrl}
+                          className="h-10 w-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
+                        />
                       ) : (
-                        <div className="h-10 w-10 rounded-full border" />
+                        <div className="h-10 w-10 rounded-full border border-zinc-200 dark:border-zinc-800" />
                       )}
                       <div className="min-w-0">
                         <div className="truncate text-sm font-semibold">{t.displayName}</div>
@@ -296,12 +316,20 @@ export default function DiscoverClient() {
             <h2 className="text-lg font-semibold">Browse profiles</h2>
             <div className="grid gap-3 md:grid-cols-2">
               {browse.map((p) => (
-                <Link key={p.cursor} href={`/u/${p.username}`} className="rounded border p-4 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <Link
+                  key={p.cursor}
+                  href={`/u/${p.username}`}
+                  className="rounded border border-zinc-200 p-4 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                >
                   <div className="flex items-center gap-3">
                     {p.avatarUrl ? (
-                      <img alt={p.displayName} src={p.avatarUrl} className="h-10 w-10 rounded-full border object-cover" />
+                      <img
+                        alt={p.displayName}
+                        src={p.avatarUrl}
+                        className="h-10 w-10 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
+                      />
                     ) : (
-                      <div className="h-10 w-10 rounded-full border" />
+                      <div className="h-10 w-10 rounded-full border border-zinc-200 dark:border-zinc-800" />
                     )}
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold">{p.displayName}</div>
@@ -329,7 +357,7 @@ export default function DiscoverClient() {
                 type="button"
                 onClick={() => loadBrowse(false)}
                 disabled={!browseCursor || browseLoading}
-                className="rounded border px-3 py-2 text-sm disabled:opacity-60"
+                className="rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
               >
                 {browseLoading ? "Loading…" : browseCursor ? "Load more" : "No more"}
               </button>

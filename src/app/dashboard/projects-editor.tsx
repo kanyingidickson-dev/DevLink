@@ -147,7 +147,7 @@ export default function ProjectsEditor() {
   }
 
   return (
-    <section className="space-y-4 rounded border p-4">
+    <section className="space-y-4 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-lg font-semibold">Projects</h2>
         <div className="flex items-center gap-2">
@@ -156,7 +156,7 @@ export default function ProjectsEditor() {
               type="button"
               onClick={resetForm}
               disabled={busy}
-              className="rounded border px-3 py-1.5 text-sm disabled:opacity-60"
+              className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
             >
               Cancel
             </button>
@@ -181,7 +181,7 @@ export default function ProjectsEditor() {
           <textarea
             value={markdown}
             onChange={(e) => setMarkdown(e.target.value)}
-            className="min-h-24 rounded border bg-transparent px-3 py-2 font-mono"
+            className="min-h-24 rounded border border-zinc-200 bg-transparent px-3 py-2 font-mono outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="Project details in markdown..."
           />
         </label>
@@ -190,7 +190,7 @@ export default function ProjectsEditor() {
           <input
             value={mediaUrls.join(", ")}
             onChange={(e) => setMediaUrls(e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="https://img1, https://img2"
           />
         </label>
@@ -199,7 +199,7 @@ export default function ProjectsEditor() {
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="My awesome project"
           />
         </label>
@@ -209,7 +209,7 @@ export default function ProjectsEditor() {
           <input
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             inputMode="numeric"
             placeholder="1"
           />
@@ -220,7 +220,7 @@ export default function ProjectsEditor() {
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-24 rounded border bg-transparent px-3 py-2"
+            className="min-h-24 rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="What it does, why it matters."
           />
         </label>
@@ -230,7 +230,7 @@ export default function ProjectsEditor() {
           <input
             value={repoUrl}
             onChange={(e) => setRepoUrl(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="https://github.com/..."
           />
         </label>
@@ -240,7 +240,7 @@ export default function ProjectsEditor() {
           <input
             value={liveUrl}
             onChange={(e) => setLiveUrl(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="https://..."
           />
         </label>
@@ -250,7 +250,7 @@ export default function ProjectsEditor() {
           <input
             value={techStack}
             onChange={(e) => setTechStack(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="Next.js, Prisma, Postgres"
           />
         </label>
@@ -260,7 +260,7 @@ export default function ProjectsEditor() {
           <input
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            className="rounded border bg-transparent px-3 py-2"
+            className="rounded border border-zinc-200 bg-transparent px-3 py-2 outline-none focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:focus:ring-zinc-800"
             placeholder="https://..."
           />
         </label>
@@ -303,7 +303,7 @@ export default function ProjectsEditor() {
                 ) : null}
               <button
                 type="button"
-                className="rounded border px-2 py-1 text-xs mt-2"
+                className="mt-2 rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
                 onClick={() => fetch("/api/projects/endorse", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ projectId: p.id, message: "Great work!" }) }).then(() => toast.success("Endorsed!"))}
               >
                 Endorse
@@ -314,7 +314,7 @@ export default function ProjectsEditor() {
                 type="button"
                 onClick={() => startEdit(p)}
                 disabled={busy}
-                className="rounded border px-2 py-1 text-xs disabled:opacity-60"
+                className="rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
                 tabIndex={0}
                 aria-label="Edit project"
                 role="button"
@@ -325,7 +325,7 @@ export default function ProjectsEditor() {
                 type="button"
                 onClick={() => remove(p.id)}
                 disabled={busy}
-                className="rounded border px-2 py-1 text-xs disabled:opacity-60"
+                className="rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
                 tabIndex={0}
                 aria-label="Delete project"
                 role="button"

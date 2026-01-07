@@ -83,13 +83,13 @@ export default function NotificationsPanel() {
   }
 
   return (
-    <section className="space-y-2 rounded border p-4">
+    <section className="space-y-2 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-lg font-semibold">Notifications</h2>
         <button
           type="button"
           onClick={refresh}
-          className="rounded border px-3 py-1.5 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900"
+          className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
         >
           Refresh
         </button>
@@ -97,7 +97,7 @@ export default function NotificationsPanel() {
 
       {error ? <div className="text-sm text-red-500">{error}</div> : null}
 
-      <div className="divide-y rounded border">
+      <div className="divide-y rounded border border-zinc-200 dark:border-zinc-800">
         {notifications.map((n) => {
           const actorUsername = n.actor?.username ?? null;
           const actorLabel = actorUsername ? `@${actorUsername}` : "Someone";
@@ -133,7 +133,7 @@ export default function NotificationsPanel() {
                       type="button"
                       onClick={() => followBack(n.id, actorUsername)}
                       disabled={followBusyId === n.id}
-                      className="rounded border px-2 py-1 text-xs disabled:opacity-60 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                      className="rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
                     >
                       {followBusyId === n.id ? "…" : "Follow back"}
                     </button>
@@ -147,7 +147,7 @@ export default function NotificationsPanel() {
                     type="button"
                     onClick={() => markRead(n.id)}
                     disabled={busyId === n.id}
-                    className="rounded border px-2 py-1 text-xs disabled:opacity-60 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                    className="rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
                   >
                     {busyId === n.id ? "…" : "Mark read"}
                   </button>
