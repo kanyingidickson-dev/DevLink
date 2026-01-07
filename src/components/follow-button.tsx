@@ -67,7 +67,7 @@ export default function FollowButton({ username }: { username: string }) {
       {unauth ? (
         <Link
           href="/login"
-          className="rounded border px-3 py-1.5 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900"
+          className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
         >
           Sign in to follow
         </Link>
@@ -76,7 +76,7 @@ export default function FollowButton({ username }: { username: string }) {
           type="button"
           onClick={toggle}
           disabled={busy}
-          className="rounded border px-3 py-1.5 text-sm disabled:opacity-60 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+          className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 disabled:opacity-60 dark:border-zinc-800 dark:hover:bg-zinc-900"
         >
           {isFollowing ? "Following" : "Follow"}
         </button>

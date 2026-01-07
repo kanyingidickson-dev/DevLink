@@ -57,16 +57,16 @@ export default async function PublicProfilePage({
 
   return (
     <div className="space-y-8">
-      <section className="rounded border p-6">
+      <section className="rounded border border-zinc-200 p-6 dark:border-zinc-800">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           {profile.avatarUrl ? (
             <img
               alt={displayName}
               src={profile.avatarUrl}
-              className="h-20 w-20 rounded-full border object-cover"
+              className="h-20 w-20 rounded-full border border-zinc-200 object-cover dark:border-zinc-800"
             />
           ) : (
-            <div className="flex h-20 w-20 items-center justify-center rounded-full border bg-zinc-50 text-lg font-semibold text-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-lg font-semibold text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-200">
               {initials || "?"}
             </div>
           )}
@@ -98,17 +98,17 @@ export default async function PublicProfilePage({
       </section>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <section className="space-y-3 rounded border p-6">
+        <section className="space-y-3 rounded border border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="text-lg font-semibold">Featured projects</h2>
           <div className="grid gap-3">
             {profile.projects.map((p) => (
-              <div key={p.id} className="rounded border p-4">
+              <div key={p.id} className="rounded border border-zinc-200 p-4 dark:border-zinc-800">
                 <div className="flex gap-4">
                   {p.imageUrl ? (
                     <img
                       alt={p.title}
                       src={p.imageUrl}
-                      className="hidden h-16 w-16 rounded border object-cover sm:block"
+                      className="hidden h-16 w-16 rounded border border-zinc-200 object-cover dark:border-zinc-800 sm:block"
                     />
                   ) : null}
 
@@ -162,14 +162,14 @@ export default async function PublicProfilePage({
           </div>
         </section>
 
-        <section className="space-y-3 rounded border p-6">
+        <section className="space-y-3 rounded border border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="text-lg font-semibold">Links</h2>
           <div className="grid gap-2">
             {profile.links.map((l) => (
               <Link
                 key={l.id}
                 href={`/l/${l.id}`}
-                className="flex items-center justify-between gap-3 rounded border px-4 py-3 text-sm hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                className="flex items-center justify-between gap-3 rounded border border-zinc-200 px-4 py-3 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
                 rel="noopener noreferrer"
               >
                 <span className="truncate font-medium">{l.label}</span>

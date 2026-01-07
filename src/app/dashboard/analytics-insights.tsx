@@ -10,7 +10,7 @@ export default function AnalyticsInsights() {
   if (!data) return <div>Loading analytics…</div>;
   const { analytics, social } = data;
   return (
-    <section className="space-y-2 rounded border p-4">
+    <section className="space-y-2 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <div className="font-semibold">Analytics & Insights</div>
       <div className="text-sm">Views: {analytics?.views ?? 0}</div>
       <div className="text-sm">Clicks: {analytics?.clicks ?? 0}</div>

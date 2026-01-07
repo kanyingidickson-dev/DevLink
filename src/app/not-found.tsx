@@ -7,10 +7,10 @@ export default function NotFound() {
       <p className="text-sm text-zinc-600 dark:text-zinc-300">The page you requested doesn’t exist.</p>
 
       <div className="flex flex-wrap gap-3">
-        <Link className="rounded border px-3 py-2 text-sm" href="/">
+        <Link className="rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900" href="/">
           Go home
         </Link>
-        <Link className="rounded border px-3 py-2 text-sm" href="/discover">
+        <Link className="rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900" href="/discover">
           Search profiles
         </Link>
       </div>

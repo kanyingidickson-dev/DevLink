@@ -40,13 +40,13 @@ export default async function ProjectPage({
         ) : null}
       </div>
 
-      <section className="rounded border p-6">
+      <section className="rounded border border-zinc-200 p-6 dark:border-zinc-800">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
           {project.imageUrl ? (
             <img
               alt={project.title}
               src={project.imageUrl}
-              className="h-24 w-24 rounded border object-cover"
+              className="h-24 w-24 rounded border border-zinc-200 object-cover dark:border-zinc-800"
             />
           ) : null}
 

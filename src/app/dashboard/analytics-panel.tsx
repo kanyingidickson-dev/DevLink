@@ -71,23 +71,23 @@ export default function AnalyticsPanel() {
   }, []);
 
   return (
-    <section className="space-y-2 rounded border p-4">
+    <section className="space-y-2 rounded border border-zinc-200 p-4 dark:border-zinc-800">
       <h2 className="text-lg font-semibold">Analytics</h2>
       {error ? <div className="text-sm text-red-500">{error}</div> : null}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded border p-3">
+        <div className="rounded border border-zinc-200 p-3 dark:border-zinc-800">
           <div className="text-xs text-zinc-500">Views</div>
           <div className="text-lg font-semibold tabular-nums">{stats.views}</div>
         </div>
-        <div className="rounded border p-3">
+        <div className="rounded border border-zinc-200 p-3 dark:border-zinc-800">
           <div className="text-xs text-zinc-500">Clicks</div>
           <div className="text-lg font-semibold tabular-nums">{stats.clicks}</div>
         </div>
-        <div className="rounded border p-3">
+        <div className="rounded border border-zinc-200 p-3 dark:border-zinc-800">
           <div className="text-xs text-zinc-500">Followers</div>
           <div className="text-lg font-semibold tabular-nums">{stats.followers}</div>
         </div>
-        <div className="rounded border p-3">
+        <div className="rounded border border-zinc-200 p-3 dark:border-zinc-800">
           <div className="text-xs text-zinc-500">Likes received</div>
           <div className="text-lg font-semibold tabular-nums">{stats.likesReceived}</div>
         </div>
@@ -95,12 +95,12 @@ export default function AnalyticsPanel() {
 
       <div className="pt-2">
         <div className="text-sm font-medium">Clicks by link</div>
-        <div className="mt-2 overflow-hidden rounded border">
+        <div className="mt-2 overflow-hidden rounded border border-zinc-200 dark:border-zinc-800">
           <div className="grid grid-cols-3 gap-2 bg-zinc-50 px-3 py-2 text-xs text-zinc-600 dark:bg-zinc-900 dark:text-zinc-300">
             <div className="col-span-2">Link</div>
             <div className="text-right">Clicks</div>
           </div>
-          <div className="divide-y">
+          <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {stats.links.map((l) => (
               <div key={l.id} className="grid grid-cols-3 gap-2 px-3 py-2 text-sm">
                 <div className="col-span-2 truncate">{l.label}</div>

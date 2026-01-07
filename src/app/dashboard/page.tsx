@@ -20,7 +20,7 @@ export default async function DashboardPage() {
         <p className="text-sm text-zinc-600 dark:text-zinc-300">Account overview and activity.</p>
       </div>
 
-      <section className="space-y-3 rounded border p-4">
+      <section className="space-y-3 rounded border border-zinc-200 p-4 dark:border-zinc-800">
         <div className="text-sm text-zinc-500">Signed in as</div>
         <div className="text-sm">
           {session.user.email ?? ""}
@@ -28,14 +28,14 @@ export default async function DashboardPage() {
         </div>
 
         <div className="flex flex-wrap gap-3 pt-1">
-          <Link className="rounded border px-3 py-1.5 text-sm" href="/profile">
+          <Link className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900" href="/profile">
             Edit profile
           </Link>
-          <Link className="rounded border px-3 py-1.5 text-sm" href="/notifications">
+          <Link className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900" href="/notifications">
             Notifications
           </Link>
           {username ? (
-            <Link className="rounded border px-3 py-1.5 text-sm" href={`/u/${username}`}>{
+            <Link className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900" href={`/u/${username}`}>{
               "View public profile"
             }</Link>
           ) : null}
