@@ -1,61 +1,125 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useMemo, useState } from "react";
 
 import SignOutButton from "@/components/sign-out-button";
 
 export default function HeaderNav() {
   const { data: session, status } = useSession();
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const links = useMemo(() => {
+    const items: Array<{ href: string; label: string }> = [{ href: "/discover", label: "Discover" }];
+
+    if (status !== "loading" && session) {
+      items.push(
+        { href: "/dashboard", label: "Dashboard" },
+        { href: "/profile", label: "Profile" },
+        { href: "/notifications", label: "Notifications" }
+      );
+    }
+
+    return items;
+  }, [session, status]);
+
+  function NavItem({ href, label }: { href: string; label: string }) {
+    const active = pathname === href || (href !== "/" && pathname?.startsWith(`${href}/`));
+
+    return (
+      <Link
+        href={href}
+        className={
+          "rounded px-2 py-1 text-sm transition hover:bg-zinc-100 dark:hover:bg-zinc-900 " +
+          (active
+            ? "bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100"
+            : "text-zinc-600 dark:text-zinc-300")
+        }
+        onClick={() => setMobileOpen(false)}
+      >
+        {label}
+      </Link>
+    );
+  }
 
   return (
-    <nav className="flex items-center gap-3">
-      <Link href="/discover" className="text-sm">
-        Search
-      </Link>
+    <nav className="relative">
+      <div className="flex items-center gap-1 sm:hidden">
+        <button
+          type="button"
+          onClick={() => setMobileOpen((v) => !v)}
+          className="rounded border border-zinc-200 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-900"
+          aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+        >
+          Menu
+        </button>
+      </div>
 
-      {status === "loading" ? null : session ? (
-        <>
-          <Link href="/dashboard" className="text-sm">
-            Dashboard
-          </Link>
-          <Link href="/profile" className="text-sm">
-            Profile
-          </Link>
-          <Link href="/notifications" className="text-sm">
-            Notifications
-          </Link>
-          <SignOutButton />
-        </>
-      ) : (
-        <div className="flex items-center gap-2">
-          <Link
-            href="/login?mode=signin"
-            className="rounded border px-2 py-1 text-sm"
-            aria-label="Log in"
-            title="Log in"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-              <path d="M10 17l5-5-5-5" />
-              <path d="M15 12H3" />
-            </svg>
-          </Link>
-          <Link
-            href="/login?mode=signup"
-            className="rounded border px-2 py-1 text-sm"
-            aria-label="Sign up"
-            title="Sign up"
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <path d="M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
-              <path d="M19 8v6" />
-              <path d="M22 11h-6" />
-            </svg>
-          </Link>
+      <div className="hidden items-center gap-1 sm:flex">
+        {links.map((l) => (
+          <NavItem key={l.href} href={l.href} label={l.label} />
+        ))}
+
+        <div className="ml-2 flex items-center gap-2 border-l border-zinc-200 pl-2 dark:border-zinc-800">
+          {status === "loading" ? null : session ? (
+            <SignOutButton />
+          ) : (
+            <>
+              <Link
+                href="/login?mode=signin"
+                className="rounded border border-zinc-200 px-3 py-1.5 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/login?mode=signup"
+                className="rounded bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              >
+                Sign up
+              </Link>
+            </>
+          )}
         </div>
-      )}
+      </div>
+
+      {mobileOpen ? (
+        <div className="absolute right-0 top-10 z-50 w-56 rounded border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-950 sm:hidden">
+          <div className="grid gap-1">
+            {links.map((l) => (
+              <NavItem key={l.href} href={l.href} label={l.label} />
+            ))}
+
+            <div className="mt-1 border-t border-zinc-200 pt-2 dark:border-zinc-800">
+              {status === "loading" ? null : session ? (
+                <div className="px-1">
+                  <SignOutButton />
+                </div>
+              ) : (
+                <div className="grid gap-2">
+                  <Link
+                    href="/login?mode=signin"
+                    className="rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/login?mode=signup"
+                    className="rounded bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Sign up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : null}
     </nav>
   );
 }

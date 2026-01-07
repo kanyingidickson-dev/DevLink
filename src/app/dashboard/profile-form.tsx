@@ -11,6 +11,8 @@ type MeResponse = {
     avatarUrl: string | null;
     theme: "LIGHT" | "DARK";
     skills: string[];
+    colorPalette: string | null;
+    vanityUrl: string | null;
   };
 };
 

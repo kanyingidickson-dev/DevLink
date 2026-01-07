@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createYoga, createSchema } from "graphql-yoga";
 
@@ -21,4 +21,10 @@ const resolvers = {
 
 const yoga = createYoga({ schema: createSchema({ typeDefs, resolvers }) });
 
-export { yoga as GET, yoga as POST };
+export async function GET(request: NextRequest) {
+  return yoga.fetch(request);
+}
+
+export async function POST(request: NextRequest) {
+  return yoga.fetch(request);
+}

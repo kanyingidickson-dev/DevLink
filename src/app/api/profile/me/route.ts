@@ -28,6 +28,8 @@ export async function GET() {
           bio: true,
           avatarUrl: true,
           theme: true,
+          colorPalette: true,
+          vanityUrl: true,
           skills: true,
           links: {
             select: { id: true, label: true, url: true, clickCount: true },

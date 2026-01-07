@@ -14,6 +14,8 @@ export async function POST(req: Request) {
   const username = normalizeUsername(body?.username);
   const displayName = typeof body?.displayName === "string" ? body.displayName.trim() : null;
   const bio = typeof body?.bio === "string" ? body.bio.trim() : null;
+  const rawColorPalette = typeof body?.colorPalette === "string" ? body.colorPalette.trim() : undefined;
+  const rawVanityUrl = typeof body?.vanityUrl === "string" ? body.vanityUrl.trim() : undefined;
   const rawAvatarUrl = typeof body?.avatarUrl === "string" ? body.avatarUrl.trim() : null;
   const avatarUrl = rawAvatarUrl
     ? rawAvatarUrl.startsWith("/uploads/")
@@ -32,6 +34,16 @@ export async function POST(req: Request) {
 
   const profile = await prisma.profile.findUnique({ where: { userId: session.user.id } });
   if (!profile) return NextResponse.json({ error: "Profile missing" }, { status: 404 });
+
+  const colorPalette = rawColorPalette === undefined ? profile.colorPalette : rawColorPalette || null;
+  const vanityUrl = rawVanityUrl === undefined ? profile.vanityUrl : rawVanityUrl || null;
+
+  if (vanityUrl) {
+    const existingVanity = await prisma.profile.findUnique({ where: { vanityUrl } });
+    if (existingVanity && existingVanity.id !== profile.id) {
+      return NextResponse.json({ error: "Vanity URL is taken" }, { status: 409 });
+    }
+  }
 
   const queries = [] as any[];
 
@@ -52,7 +64,9 @@ export async function POST(req: Request) {
         bio,
         avatarUrl,
         theme,
-        skills
+        skills,
+        colorPalette,
+        vanityUrl
       }
     })
   );

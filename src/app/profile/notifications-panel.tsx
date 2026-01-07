@@ -10,6 +10,7 @@ type NotificationItem = {
   isRead: boolean;
   actor: { username: string | null } | null;
   project: { title: string } | null;
+  actorIsFollowing?: boolean;
 };
 
 export default function NotificationsPanel() {

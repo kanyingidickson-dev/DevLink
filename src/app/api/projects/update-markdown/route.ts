@@ -11,7 +11,9 @@ export async function POST(req: Request) {
   const { projectId, markdown } = body || {};
   if (typeof projectId !== "string" || typeof markdown !== "string") return NextResponse.json({ error: "Invalid input" }, { status: 400 });
   const project = await prisma.project.findUnique({ where: { id: projectId } });
-  if (!project || project.profileId !== session.user.profileId) return NextResponse.json({ error: "Not found or forbidden" }, { status: 404 });
+  const profile = await prisma.profile.findUnique({ where: { userId } });
+  if (!project || !profile || project.profileId !== profile.id)
+    return NextResponse.json({ error: "Not found or forbidden" }, { status: 404 });
   await prisma.project.update({ where: { id: projectId }, data: { markdown } });
   return NextResponse.json({ ok: true });
 }

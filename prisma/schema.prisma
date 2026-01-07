@@ -38,6 +38,8 @@ model User {
   passwordHash String?
   username     String?   @unique
 
+  twoFactorSecret String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -82,6 +84,9 @@ model Profile {
   colorPalette String? 
   vanityUrl   String?  @unique
   skills      String[] @default([])
+
+  location   String?
+  openToWork Boolean  @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
