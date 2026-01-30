@@ -2,6 +2,8 @@
 
 DevLink is a small profile hub for developers: links, skills, and a clean public profile page.
 
+🔗 [Live Demo](https://kanyingidickson-dev.github.io/DevLink/)
+
 This branch (`demo-msw`) is a **frontend-only demo** designed to run on **GitHub Pages** via **static export**. All API calls are handled by **MSW** with a seeded, in-browser database.
 
 ## Features
