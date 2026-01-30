@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+import { apiUrl } from "@/lib/api-url";
+
 type MeResponse = {
   user: { email: string | null; username: string | null };
   profile: {
@@ -37,7 +39,7 @@ export default function ProfileForm() {
 
     async function load() {
       setError(null);
-      const res = await fetch("/api/profile/me");
+      const res = await fetch(apiUrl("/api/profile/me"));
       if (!res.ok) {
         setError("Failed to load profile");
         return;
@@ -68,7 +70,7 @@ export default function ProfileForm() {
     setError(null);
 
     try {
-      const res = await fetch("/api/profile/update", {
+      const res = await fetch(apiUrl("/api/profile/update"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
@@ -107,7 +109,7 @@ export default function ProfileForm() {
       const form = new FormData();
       form.append("file", avatarFile);
 
-      const res = await fetch("/api/profile/avatar", {
+      const res = await fetch(apiUrl("/api/profile/avatar"), {
         method: "POST",
         body: form,
       });

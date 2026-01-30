@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+import { apiUrl } from "@/lib/api-url";
+
 export default function FollowButton({ username }: { username: string }) {
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -15,7 +17,7 @@ export default function FollowButton({ username }: { username: string }) {
     let mounted = true;
 
     async function load() {
-      const res = await fetch(`/api/social/follow?username=${encodeURIComponent(username)}`);
+      const res = await fetch(apiUrl(`/api/social/follow?username=${encodeURIComponent(username)}`));
       if (!res.ok) return;
       const data = await res.json();
       if (!mounted) return;
@@ -35,7 +37,7 @@ export default function FollowButton({ username }: { username: string }) {
 
     try {
       const method = isFollowing ? "DELETE" : "POST";
-      const res = await fetch(`/api/social/follow?username=${encodeURIComponent(username)}`, { method });
+      const res = await fetch(apiUrl(`/api/social/follow?username=${encodeURIComponent(username)}`), { method });
       if (res.status === 401) {
         setUnauth(true);
         return;

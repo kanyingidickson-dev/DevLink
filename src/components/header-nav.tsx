@@ -2,20 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { useMemo, useState } from "react";
 
+import { useDemoAuth } from "@/components/app-providers";
 import SignOutButton from "@/components/sign-out-button";
 
 export default function HeaderNav() {
-  const { data: session, status } = useSession();
+  const { userId, status } = useDemoAuth();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const links = useMemo(() => {
     const items: Array<{ href: string; label: string }> = [{ href: "/discover", label: "Discover" }];
 
-    if (status !== "loading" && session) {
+    if (status !== "loading" && userId) {
       items.push(
         { href: "/dashboard", label: "Dashboard" },
         { href: "/profile", label: "Profile" },
@@ -24,7 +24,7 @@ export default function HeaderNav() {
     }
 
     return items;
-  }, [session, status]);
+  }, [status, userId]);
 
   function NavItem({ href, label }: { href: string; label: string }) {
     const active = pathname === href || (href !== "/" && pathname?.startsWith(`${href}/`));
@@ -65,7 +65,7 @@ export default function HeaderNav() {
         ))}
 
         <div className="ml-2 flex items-center gap-2 border-l border-zinc-200 pl-2 dark:border-zinc-800">
-          {status === "loading" ? null : session ? (
+          {status === "loading" ? null : userId ? (
             <SignOutButton />
           ) : (
             <>
@@ -94,7 +94,7 @@ export default function HeaderNav() {
             ))}
 
             <div className="mt-1 border-t border-zinc-200 pt-2 dark:border-zinc-800">
-              {status === "loading" ? null : session ? (
+              {status === "loading" ? null : userId ? (
                 <div className="px-1">
                   <SignOutButton />
                 </div>

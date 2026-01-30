@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 type ProfileItem = {
   username: string;
   displayName: string;
@@ -63,7 +65,7 @@ export default function DiscoverClient() {
     let mounted = true;
 
     async function loadTrending() {
-      const res = await fetch("/api/discover/trending");
+      const res = await fetch(apiUrl("/api/discover/trending"));
       if (!res.ok) return;
       const data = await res.json();
       if (!mounted) return;
@@ -90,7 +92,7 @@ export default function DiscoverClient() {
       setError(null);
 
       try {
-        const res = await fetch(`/api/discover/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(apiUrl(`/api/discover/search?q=${encodeURIComponent(query)}`));
         if (!res.ok) throw new Error("Search failed");
         const data = await res.json();
         if (!mounted) return;
@@ -120,7 +122,7 @@ export default function DiscoverClient() {
       }
 
       try {
-        const res = await fetch(`/api/discover/autocomplete?q=${encodeURIComponent(query)}`);
+        const res = await fetch(apiUrl(`/api/discover/autocomplete?q=${encodeURIComponent(query)}`));
         if (!res.ok) return;
         const data = await res.json().catch(() => ({}));
         if (!mounted) return;
@@ -144,8 +146,8 @@ export default function DiscoverClient() {
 
     try {
       const url = initial
-        ? "/api/discover/browse"
-        : `/api/discover/browse?cursor=${encodeURIComponent(browseCursor ?? "")}`;
+        ? apiUrl("/api/discover/browse")
+        : apiUrl(`/api/discover/browse?cursor=${encodeURIComponent(browseCursor ?? "")}`);
       const res = await fetch(url);
       if (!res.ok) throw new Error("Browse failed");
       const data = await res.json().catch(() => ({}));
@@ -162,7 +164,7 @@ export default function DiscoverClient() {
     let mounted = true;
     setBrowseLoading(true);
 
-    fetch("/api/discover/browse")
+    fetch(apiUrl("/api/discover/browse"))
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (!mounted || !data) return;

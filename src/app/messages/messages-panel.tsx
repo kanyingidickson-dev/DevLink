@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 export default function MessagesPanel({ withUser }: { withUser: string }) {
   const [messages, setMessages] = useState<any[]>([]);
   const [content, setContent] = useState("");
@@ -8,7 +10,7 @@ export default function MessagesPanel({ withUser }: { withUser: string }) {
 
   async function load() {
     setLoading(true);
-    const res = await fetch(`/api/messages?with=${encodeURIComponent(withUser)}`);
+    const res = await fetch(apiUrl(`/api/messages?with=${encodeURIComponent(withUser)}`));
     const data = await res.json();
     setMessages(data.messages || []);
     setLoading(false);
@@ -16,7 +18,7 @@ export default function MessagesPanel({ withUser }: { withUser: string }) {
 
   async function send() {
     if (!content.trim()) return;
-    await fetch("/api/messages", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ to: withUser, content }) });
+    await fetch(apiUrl("/api/messages"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ to: withUser, content }) });
     setContent("");
     load();
   }

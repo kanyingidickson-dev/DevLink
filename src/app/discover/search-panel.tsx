@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 export default function SearchPanel() {
   const [skills, setSkills] = useState("");
   const [tech, setTech] = useState("");
@@ -18,7 +20,7 @@ export default function SearchPanel() {
     if (location) params.set("location", location);
     if (openToWork) params.set("openToWork", "true");
     if (sort) params.set("sort", sort);
-    const res = await fetch(`/api/search?${params.toString()}`);
+    const res = await fetch(apiUrl(`/api/search?${params.toString()}`));
     const data = await res.json();
     setResults(data.results || []);
     setLoading(false);

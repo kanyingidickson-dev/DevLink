@@ -1,12 +1,14 @@
 "use client";
 import useSWR from "swr";
 
+import { apiUrl } from "@/lib/api-url";
+
 function fetcher(url: string) {
   return fetch(url).then((r) => r.json());
 }
 
 export default function AnalyticsInsights() {
-  const { data } = useSWR("/api/profile/me", fetcher);
+  const { data } = useSWR(apiUrl("/api/profile/me"), fetcher);
   if (!data) return <div>Loading analytics…</div>;
   const { analytics, social } = data;
   return (

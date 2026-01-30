@@ -2,31 +2,26 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import ProjectLikeButton from "@/components/project-like-button";
-import { prisma } from "@/lib/prisma";
+import { SEED_PROJECTS, SEED_PROJECT_IDS, SEED_USERS } from "@/mocks/seed";
 
-export const dynamic = "force-dynamic";
+export const dynamicParams = false;
 
-export default async function ProjectPage({
+export function generateStaticParams() {
+  return SEED_PROJECT_IDS.map((projectId) => ({ projectId }));
+}
+
+export default function ProjectPage({
   params
 }: {
   params: { projectId: string };
 }) {
   const projectId = params.projectId;
 
-  const project = await prisma.project.findUnique({
-    where: { id: projectId },
-    include: {
-      profile: {
-        include: {
-          user: { select: { username: true } }
-        }
-      }
-    }
-  });
+  const project = SEED_PROJECTS.find((p) => p.id === projectId) ?? null;
+  if (!project) notFound();
 
-  if (!project?.profile) notFound();
-
-  const ownerUsername = project.profile.user.username;
+  const owner = SEED_USERS.find((u) => u.id === project.profileUserId) ?? null;
+  const ownerUsername = owner?.username ?? null;
 
   return (
     <div className="space-y-6">

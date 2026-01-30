@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 type LinkStat = { id: string; label: string; clickCount: number };
 type Activity = {
   id: string;
@@ -35,7 +37,7 @@ export default function AnalyticsPanel() {
     let mounted = true;
 
     async function load() {
-      const res = await fetch("/api/profile/me");
+      const res = await fetch(apiUrl("/api/profile/me"));
       if (!res.ok) {
         setError("Failed to load analytics");
         return;

@@ -1,12 +1,14 @@
 "use client";
 import useSWR from "swr";
 
+import { apiUrl } from "@/lib/api-url";
+
 function fetcher(url: string) {
   return fetch(url).then((r) => r.json());
 }
 
 export function FeedPanel() {
-  const { data } = useSWR("/api/dashboard/feed", fetcher);
+  const { data } = useSWR(apiUrl("/api/dashboard/feed"), fetcher);
   if (!data)
     return (
       <section className="space-y-2 rounded border border-zinc-200 p-4 dark:border-zinc-800">
@@ -38,7 +40,7 @@ export function FeedPanel() {
 }
 
 export function SuggestionsPanel() {
-  const { data } = useSWR("/api/dashboard/suggestions", fetcher);
+  const { data } = useSWR(apiUrl("/api/dashboard/suggestions"), fetcher);
   if (!data)
     return (
       <section className="space-y-2 rounded border border-zinc-200 p-4 dark:border-zinc-800">
@@ -70,7 +72,7 @@ export function SuggestionsPanel() {
 }
 
 export function TrendingPanel() {
-  const { data } = useSWR("/api/dashboard/trending", fetcher);
+  const { data } = useSWR(apiUrl("/api/dashboard/trending"), fetcher);
   if (!data)
     return (
       <section className="space-y-2 rounded border border-zinc-200 p-4 dark:border-zinc-800">

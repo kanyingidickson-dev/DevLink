@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+import { apiUrl } from "@/lib/api-url";
+
 type LinkItem = { id: string; label: string; url: string; clickCount: number };
 
 export default function LinksEditor() {
@@ -13,7 +15,7 @@ export default function LinksEditor() {
   const [error, setError] = useState<string | null>(null);
 
   async function refresh() {
-    const res = await fetch("/api/profile/links");
+    const res = await fetch(apiUrl("/api/profile/links"));
     if (!res.ok) {
       setError("Failed to load links");
       return;
@@ -31,7 +33,7 @@ export default function LinksEditor() {
     setError(null);
 
     try {
-      const res = await fetch("/api/profile/links", {
+      const res = await fetch(apiUrl("/api/profile/links"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ label, url })
@@ -60,7 +62,7 @@ export default function LinksEditor() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/profile/links?linkId=${encodeURIComponent(linkId)}`, {
+      const res = await fetch(apiUrl(`/api/profile/links?linkId=${encodeURIComponent(linkId)}`), {
         method: "DELETE"
       });
 

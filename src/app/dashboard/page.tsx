@@ -1,17 +1,46 @@
-import { getServerSession } from "next-auth";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+"use client";
 
-import { authOptions } from "@/lib/auth";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+
+import { useDemoAuth } from "@/components/app-providers";
+import { findUserById, getDb } from "@/mocks/db";
 import AnalyticsPanel from "./analytics-panel";
 import AnalyticsInsights from "./analytics-insights";
 import { FeedPanel, SuggestionsPanel, TrendingPanel } from "./social-panels";
 
-export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect("/login");
+export default function DashboardPage() {
+  const router = useRouter();
+  const { userId, status, setUserId } = useDemoAuth();
 
-  const username = session.user.username;
+  const user = useMemo(() => {
+    if (!userId) return null;
+    const db = getDb();
+    return findUserById(db, userId);
+  }, [userId]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace(`/login?mode=signin&callbackUrl=${encodeURIComponent("/dashboard")}`);
+      return;
+    }
+
+    if (status === "authenticated" && userId && !user) {
+      setUserId(null);
+      router.replace(`/login?mode=signin&callbackUrl=${encodeURIComponent("/dashboard")}`);
+    }
+  }, [router, setUserId, status, user, userId]);
+
+  if (status === "loading") {
+    return <div className="text-sm text-zinc-500">Loading…</div>;
+  }
+
+  if (!userId || !user) {
+    return null;
+  }
+
+  const username = user.username;
 
   return (
     <div className="space-y-8">
@@ -23,7 +52,7 @@ export default async function DashboardPage() {
       <section className="space-y-3 rounded border border-zinc-200 p-4 dark:border-zinc-800">
         <div className="text-sm text-zinc-500">Signed in as</div>
         <div className="text-sm">
-          {session.user.email ?? ""}
+          {user.email ?? ""}
           {username ? <span className="text-zinc-500"> · @{username}</span> : null}
         </div>
 

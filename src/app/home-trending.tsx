@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 type TrendingItem = {
   username: string;
   displayName: string;
@@ -20,7 +22,7 @@ export default function HomeTrending() {
     let mounted = true;
 
     async function load() {
-      const res = await fetch("/api/discover/trending");
+      const res = await fetch(apiUrl("/api/discover/trending"));
       if (!res.ok) return;
       const data = await res.json().catch(() => ({}));
       if (!mounted) return;

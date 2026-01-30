@@ -1,15 +1,17 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 
 import FollowButton from "@/components/follow-button";
 import ProjectLikeButton from "@/components/project-like-button";
-import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { SEED_LINKS, SEED_PROFILES, SEED_PROJECTS, SEED_USERS, SEED_USERNAMES } from "@/mocks/seed";
 
-export const dynamic = "force-dynamic";
+export const dynamicParams = false;
 
-export default async function PublicProfilePage({
+export function generateStaticParams() {
+  return SEED_USERNAMES.map((username) => ({ username }));
+}
+
+export default function PublicProfilePage({
   params
 }: {
   params: { username: string };
@@ -17,36 +19,23 @@ export default async function PublicProfilePage({
   const username = (params.username || "").toLowerCase();
   if (!username) notFound();
 
-  const user = await prisma.user.findUnique({
-    where: { username },
-    include: {
-      profile: {
-        include: {
-          links: { orderBy: { createdAt: "desc" } },
-          projects: {
-            where: { featured: true },
-            orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }]
-          }
-        }
-      }
-    }
-  });
+  const user = SEED_USERS.find((u) => u.username.toLowerCase() === username) ?? null;
+  if (!user) notFound();
 
-  if (!user?.profile) notFound();
+  const profile = SEED_PROFILES.find((p) => p.userId === user.id) ?? null;
+  if (!profile) notFound();
 
-  const session = await getServerSession(authOptions);
-  const canFollow = session?.user?.id ? session.user.id !== user.id : true;
+  const links = SEED_LINKS
+    .filter((l) => l.profileUserId === user.id)
+    .slice()
+    .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 
-  void prisma.analyticsEvent
-    .create({
-      data: {
-        profileId: user.profile.id,
-        type: "VIEW"
-      }
-    })
-    .catch(() => null);
+  const projects = SEED_PROJECTS
+    .filter((p) => p.profileUserId === user.id && p.featured)
+    .slice()
+    .sort((a, b) => (a.sortOrder !== b.sortOrder ? a.sortOrder - b.sortOrder : a.createdAt < b.createdAt ? 1 : -1));
 
-  const profile = user.profile;
+  const canFollow = true;
   const displayName = profile.displayName || username;
   const initials = displayName
     .split(/\s+/)
@@ -101,7 +90,7 @@ export default async function PublicProfilePage({
         <section className="space-y-3 rounded border border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="text-lg font-semibold">Featured projects</h2>
           <div className="grid gap-3">
-            {profile.projects.map((p) => (
+            {projects.map((p) => (
               <div key={p.id} className="rounded border border-zinc-200 p-4 dark:border-zinc-800">
                 <div className="flex gap-4">
                   {p.imageUrl ? (
@@ -156,7 +145,7 @@ export default async function PublicProfilePage({
               </div>
             ))}
 
-            {!profile.projects.length ? (
+            {!projects.length ? (
               <div className="text-sm text-zinc-500">No featured projects yet.</div>
             ) : null}
           </div>
@@ -165,7 +154,7 @@ export default async function PublicProfilePage({
         <section className="space-y-3 rounded border border-zinc-200 p-6 dark:border-zinc-800">
           <h2 className="text-lg font-semibold">Links</h2>
           <div className="grid gap-2">
-            {profile.links.map((l) => (
+            {links.map((l) => (
               <Link
                 key={l.id}
                 href={`/l/${l.id}`}
@@ -177,7 +166,7 @@ export default async function PublicProfilePage({
               </Link>
             ))}
 
-            {!profile.links.length ? <div className="text-sm text-zinc-500">No links yet.</div> : null}
+            {!links.length ? <div className="text-sm text-zinc-500">No links yet.</div> : null}
           </div>
         </section>
       </div>

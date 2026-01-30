@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+import { apiUrl } from "@/lib/api-url";
+
 type ProjectItem = {
   id: string;
   title: string;
@@ -48,7 +50,7 @@ export default function ProjectsEditor() {
   }
 
   async function refresh() {
-    const res = await fetch("/api/profile/projects");
+    const res = await fetch(apiUrl("/api/profile/projects"));
     if (!res.ok) {
       setError("Failed to load projects");
       return;
@@ -83,8 +85,8 @@ export default function ProjectsEditor() {
     try {
       const isEditing = Boolean(editingId);
       const url = isEditing
-        ? `/api/profile/projects?projectId=${encodeURIComponent(editingId as string)}`
-        : "/api/profile/projects";
+        ? apiUrl(`/api/profile/projects?projectId=${encodeURIComponent(editingId as string)}`)
+        : apiUrl("/api/profile/projects");
 
       const res = await fetch(url, {
         method: isEditing ? "PUT" : "POST",
@@ -125,7 +127,7 @@ export default function ProjectsEditor() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/profile/projects?projectId=${encodeURIComponent(projectId)}`, {
+      const res = await fetch(apiUrl(`/api/profile/projects?projectId=${encodeURIComponent(projectId)}`), {
         method: "DELETE"
       });
 
@@ -304,7 +306,7 @@ export default function ProjectsEditor() {
               <button
                 type="button"
                 className="mt-2 rounded border border-zinc-200 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
-                onClick={() => fetch("/api/projects/endorse", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ projectId: p.id, message: "Great work!" }) }).then(() => toast.success("Endorsed!"))}
+                onClick={() => fetch(apiUrl("/api/projects/endorse"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ projectId: p.id, message: "Great work!" }) }).then(() => toast.success("Endorsed!"))}
               >
                 Endorse
               </button>

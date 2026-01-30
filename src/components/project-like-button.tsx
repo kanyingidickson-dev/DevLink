@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+import { apiUrl } from "@/lib/api-url";
+
 export default function ProjectLikeButton({ projectId }: { projectId: string }) {
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -13,7 +15,7 @@ export default function ProjectLikeButton({ projectId }: { projectId: string }) 
     let mounted = true;
 
     async function load() {
-      const res = await fetch(`/api/social/project-like?projectId=${encodeURIComponent(projectId)}`);
+      const res = await fetch(apiUrl(`/api/social/project-like?projectId=${encodeURIComponent(projectId)}`));
       if (!res.ok) return;
       const data = await res.json();
       if (!mounted) return;
@@ -33,7 +35,7 @@ export default function ProjectLikeButton({ projectId }: { projectId: string }) 
 
     try {
       const method = liked ? "DELETE" : "POST";
-      const res = await fetch(`/api/social/project-like?projectId=${encodeURIComponent(projectId)}`, { method });
+      const res = await fetch(apiUrl(`/api/social/project-like?projectId=${encodeURIComponent(projectId)}`), { method });
       if (res.status === 401) {
         toast.error("Sign in to like projects");
         return;

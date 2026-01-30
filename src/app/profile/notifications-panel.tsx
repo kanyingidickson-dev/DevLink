@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 type NotificationItem = {
   id: string;
   type: string;
@@ -21,7 +23,7 @@ export default function NotificationsPanel() {
 
   async function refresh() {
     setError(null);
-    const res = await fetch("/api/notifications");
+    const res = await fetch(apiUrl("/api/notifications"));
     if (!res.ok) {
       setError("Failed to load notifications");
       return;
@@ -38,7 +40,7 @@ export default function NotificationsPanel() {
   async function markRead(notificationId: string) {
     setBusyId(notificationId);
     try {
-      const res = await fetch("/api/notifications", {
+      const res = await fetch(apiUrl("/api/notifications"), {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ notificationId })
@@ -62,7 +64,7 @@ export default function NotificationsPanel() {
     setError(null);
 
     try {
-      const res = await fetch(`/api/social/follow?username=${encodeURIComponent(username)}`, {
+      const res = await fetch(apiUrl(`/api/social/follow?username=${encodeURIComponent(username)}`), {
         method: "POST"
       });
 

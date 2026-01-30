@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 
+import { apiUrl } from "@/lib/api-url";
+
 export default function CommentsPanel({ projectId }: { projectId: string }) {
   const [comments, setComments] = useState<any[]>([]);
   const [message, setMessage] = useState("");
@@ -8,7 +10,7 @@ export default function CommentsPanel({ projectId }: { projectId: string }) {
 
   async function load() {
     setLoading(true);
-    const res = await fetch(`/api/projects/comments?projectId=${encodeURIComponent(projectId)}`);
+    const res = await fetch(apiUrl(`/api/projects/comments?projectId=${encodeURIComponent(projectId)}`));
     const data = await res.json();
     setComments(data.comments || []);
     setLoading(false);
@@ -16,7 +18,7 @@ export default function CommentsPanel({ projectId }: { projectId: string }) {
 
   async function send() {
     if (!message.trim()) return;
-    await fetch("/api/projects/comment", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ projectId, message }) });
+    await fetch(apiUrl("/api/projects/comment"), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ projectId, message }) });
     setMessage("");
     load();
   }

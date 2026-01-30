@@ -1,9 +1,12 @@
 "use client";
 
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
+
+import { useDemoAuth } from "@/components/app-providers";
+import { apiUrl } from "@/lib/api-url";
+import { getDb } from "@/mocks/db";
 
 function sanitizeCallbackUrl(raw: string | null | undefined) {
   const fallback = "/dashboard";
@@ -27,12 +30,11 @@ export default function LoginPage() {
 function LoginPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { setUserId } = useDemoAuth();
   const callbackUrl = useMemo(
     () => sanitizeCallbackUrl(searchParams.get("callbackUrl")),
     [searchParams]
   );
-
-  const [providers, setProviders] = useState<Record<string, unknown> | null>(null);
 
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -42,31 +44,10 @@ function LoginPageInner() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    let mounted = true;
-    fetch("/api/auth/providers")
-      .then((r) => (r.ok ? r.json() : {}))
-      .then((data) => {
-        if (!mounted) return;
-        setProviders(data ?? {});
-      })
-      .catch(() => {
-        if (!mounted) return;
-        setProviders({});
-      });
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
     const m = searchParams.get("mode");
     if (m === "signup") setMode("signup");
     if (m === "signin") setMode("signin");
   }, [searchParams]);
-
-  const hasGithub = Boolean(providers && (providers as any).github);
-  const hasGoogle = Boolean(providers && (providers as any).google);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,7 +64,7 @@ function LoginPageInner() {
 
     try {
       if (mode === "signup") {
-        const res = await fetch("/api/register", {
+        const res = await fetch(apiUrl("/api/register"), {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ email, password, username })
@@ -94,18 +75,20 @@ function LoginPageInner() {
           throw new Error(body?.error ?? "Registration failed");
         }
 
+        const body = await res.json().catch(() => ({}));
+        const newUserId = typeof body?.user?.id === "string" ? body.user.id : null;
+        if (!newUserId) throw new Error("Registration failed");
+        setUserId(newUserId);
         toast.success("Account created");
+        router.push(callbackUrl);
+        return;
       }
 
-      const result = await signIn("credentials", {
-        redirect: false,
-        email,
-        password,
-        callbackUrl
-      });
-
-      if (!result?.ok) throw new Error("Invalid email or password");
-
+      const db = getDb();
+      const normalized = email.trim().toLowerCase();
+      const u = db.users.find((x) => x.email.toLowerCase() === normalized) ?? null;
+      if (!u || u.password !== password) throw new Error("Invalid email or password");
+      setUserId(u.id);
       toast.success("Signed in");
       router.push(callbackUrl);
     } catch (err) {
@@ -122,40 +105,9 @@ function LoginPageInner() {
       <div className="space-y-1">
         <h1 className="text-2xl font-semibold">{mode === "signin" ? "Sign in" : "Create account"}</h1>
         <p className="text-sm text-zinc-600 dark:text-zinc-300">
-          Use email + password, or continue with OAuth.
+          Use a demo email + password.
         </p>
       </div>
-
-      {hasGithub || hasGoogle ? (
-        <div className="flex gap-2">
-          {hasGithub ? (
-            <button
-              type="button"
-              onClick={() => signIn("github", { callbackUrl })}
-              className="flex-1 rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
-            >
-              GitHub
-            </button>
-          ) : null}
-          {hasGoogle ? (
-            <button
-              type="button"
-              onClick={() => signIn("google", { callbackUrl })}
-              className="flex-1 rounded border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
-            >
-              Google
-            </button>
-          ) : null}
-        </div>
-      ) : null}
-
-      {hasGithub || hasGoogle ? (
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
-          <div className="text-xs text-zinc-500">or</div>
-          <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-800" />
-        </div>
-      ) : null}
 
       <form onSubmit={onSubmit} className="space-y-3">
         {mode === "signup" ? (
