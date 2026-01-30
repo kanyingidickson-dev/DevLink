@@ -2,11 +2,13 @@
 
 DevLink is a small profile hub for developers: links, skills, and a clean public profile page.
 
+This branch (`demo-msw`) is a **frontend-only demo** designed to run on **GitHub Pages** via **static export**. All API calls are handled by **MSW** with a seeded, in-browser database.
+
 ## Features
 
-- **Auth**
-  - Email + password (credentials)
-  - Optional OAuth (GitHub, Google) if env vars are set
+- **Auth (demo)**
+  - Email + password (demo credentials)
+  - Session stored in `localStorage` (`devlink_demo_user_id`)
 - **Dashboard**
   - Edit username, display name, bio, skills, avatar URL
   - Add/remove links
@@ -18,8 +20,7 @@ DevLink is a small profile hub for developers: links, skills, and a clean public
 ## Tech
 
 - Next.js (App Router)
-- NextAuth
-- Prisma + Postgres
+- MSW (Mock Service Worker)
 - Tailwind CSS
 
 ## Getting started
@@ -30,53 +31,34 @@ DevLink is a small profile hub for developers: links, skills, and a clean public
 npm install
 ```
 
-### 2) Start Postgres (recommended)
-
-```bash
-docker compose up -d
-```
-
-This repo maps the container's `5432` to host `5433` to avoid conflicts with an existing local Postgres.
-
-### 3) Configure env
-
-Create `.env` (or copy from `.env.example`) and fill in at least:
-
-- `DATABASE_URL`
-- `NEXTAUTH_SECRET`
-
-Optional (enables OAuth buttons):
-
-- `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-
-### 4) Setup database
-
-```bash
-npx prisma migrate dev
-```
-
-Optional seed data:
-
-```bash
-npm run db:seed
-```
-
-Seeded credentials:
-
-- Email: `demo@devlink.local`
-- Password: `password123`
-
-### 5) Run dev server
+### 2) Run dev server
 
 ```bash
 npm run dev
 ```
 
-Open:
+Open `http://localhost:3000`.
 
-- `http://localhost:3000`
-- Create an account at `http://localhost:3000/login`
+### Demo login
+
+Seeded demo credentials:
+
+- Email: `demo@devlink.app`
+- Password: `demo`
+
+### Data persistence / reset
+
+The demo database is seeded on first load and persisted in `localStorage`:
+
+- `devlink_demo_db_v1`
+- `devlink_demo_user_id`
+
+To reset to a fresh seed, clear those keys in your browser storage.
+
+### Optional env
+
+- `NEXT_PUBLIC_MSW=disabled` disables MSW (useful for debugging).
+- `NEXT_PUBLIC_BASE_PATH` is used for GitHub Pages basePath (see below).
 
 ## Routes
 
@@ -86,15 +68,16 @@ Open:
 
 ## Notes / tradeoffs
 
-- Link click tracking is done via a server redirect route (`/l/:linkId`) so it works without client JS.
-- OAuth is optional to keep local setup simple.
+- Link click tracking is implemented client-side for the demo.
+- This branch is intentionally frontend-only; server routes and Prisma code are preserved under `src/server/` but are not used for the demo.
 
 ## Architecture
 
-- `src/app` contains all Next.js routes (pages, API, server actions).
+- `src/app` contains the pages for the demo.
 - `src/components` contains reusable UI components.
-- `src/lib` contains helpers (auth, Prisma, rate limit, validators).
-- `prisma/schema.prisma` defines the database models.
+- `src/lib` contains client helpers (like `apiUrl()` for basePath-aware API calls).
+- `src/mocks` contains the MSW worker, handlers, and seeded demo DB.
+- `src/server` contains the original server routes and Prisma code (preserved for reference, not used in the demo build).
 
 ## Contributing
 
@@ -106,15 +89,18 @@ Open:
 
 ## Security
 
-- Sessions use NextAuth with JWT.
-- Passwords use bcrypt hashes.
+- This is a demo build. Authentication is handled client-side and stored in `localStorage`.
 - Public routes include `/u/:username`, `/l/:linkId`, and discover endpoints.
-- Rate limiting uses an in-memory store. It only limits per server instance.
 - Login `callbackUrl` only accepts relative paths.
 
 ## Deployment
 
-- Hosting targets Vercel.
-- Required env vars are `DATABASE_URL` and `NEXTAUTH_SECRET`.
-- Optional env vars enable OAuth: `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`.
-- Use a managed Postgres database in production.
+This branch deploys to GitHub Pages using a static export.
+
+- **Workflow**: `.github/workflows/pages.yml` (runs on pushes to `demo-msw`)
+- **Base path**: set to `/DevLink` in the workflow via `NEXT_PUBLIC_BASE_PATH=/DevLink`
+- **Output**: `next build` generates `./out` (uploaded to GitHub Pages)
+
+In your repo settings:
+
+- Set **Pages** source to **GitHub Actions**.
